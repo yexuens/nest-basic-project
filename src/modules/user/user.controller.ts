@@ -1,15 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Result } from '@/common/dtos/result';
 import { ApiResult } from '@/common/decorators/api-result.decorator';
+import { UserCreateDto, UserDto } from '@/modules/user/schema';
 
-class UserDTO {
-  @ApiProperty({ description: '用户ID' })
-  id: number;
-  @ApiProperty({ description: '用户名' })
-  name: string;
-}
 
 @Controller('user')
 export class UserController {
@@ -17,13 +11,18 @@ export class UserController {
   }
 
   @Get('')
-  @ApiResult(UserDTO, true)
+  @ApiResult(UserDto, true)
   async getList() {
     return Result.success(
-      [
-        { id: 1, name: '张三' },
-        { id: 2, name: '李四' },
-      ],
+      await this.userService.findAll(),
+    );
+  }
+
+  @Post('')
+  @ApiResult(UserDto)
+  async create(@Body() createUserDto: UserCreateDto) {
+    return Result.success(
+      await this.userService.create(createUserDto),
     );
   }
 }
