@@ -1,4 +1,4 @@
-﻿import { users } from '@/modules/user/schema';
+﻿import { users } from '@/modules/user/user.schema';
 
 export {
   users,

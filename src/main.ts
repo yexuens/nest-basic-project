@@ -3,9 +3,8 @@ import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fa
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
-import { AllExceptionsFilter } from '@/common/filters/http-exception.filter';
+import { AllExceptionsFilter } from '@/common/filters/all-exception.filter';
 import { ZodExceptionFilter } from '@/common/filters/zod-exception.filter';
-import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());

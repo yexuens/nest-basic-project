@@ -8,6 +8,7 @@
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { Result } from '@/common/dtos/result';
+import { BizError } from '@/common/errors/biz.error';
 
 // @Catch() 不带参数，表示捕获所有异常
 @Catch()
@@ -23,7 +24,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let code = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal Server Error';
 
-    // 2. 处理 NestJS 标准的 HttpException (如 404 NotFound, 403 Forbidden 等)
+    if (exception instanceof BizError) {
+      code = HttpStatus.BAD_REQUEST;
+      message = exception.message;
+    }
+
     if (exception instanceof HttpException) {
       code = exception.getStatus();
       const exceptionResponse = exception.getResponse();

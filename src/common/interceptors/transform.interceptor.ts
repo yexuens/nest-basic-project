@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Result } from '@/common/dtos/result';
 import { Reflector } from '@nestjs/core';
-import { BYPASS_KEY } from '@/common/decorators/bypass-transform.decorator';
+import { BYPASS_KEY } from '@/common/decorators/base/bypass-transform.decorator';
 
 
 @Injectable()

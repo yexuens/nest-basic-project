@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
@@ -10,6 +10,9 @@ import { ZodExceptionFilter } from '@/common/filters/zod-exception.filter';
 import { LoginGuard } from '@/common/guards/login.guard';
 import { RedisModule } from '@/data/redis/redis.module';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+import { RedisAccessor } from '@/common/accessors/redis.accessor';
+import { REDIS_CLIENT } from '@/data/redis/redis.provider';
+import type { RedisClientType } from 'redis';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), UserModule, DrizzleModule, RedisModule],
@@ -24,6 +27,9 @@ import { TransformInterceptor } from '@/common/interceptors/transform.intercepto
     {
       provide: APP_INTERCEPTOR, useClass: TransformInterceptor,
     },
+    // {
+    //   provide: APP_INTERCEPTOR, useClass: CacheableInterceptor,
+    // },
     {
       provide: APP_FILTER, useClass: ZodExceptionFilter,
     },
@@ -33,5 +39,13 @@ import { TransformInterceptor } from '@/common/interceptors/transform.intercepto
   ],
 })
 
-export class AppModule {
+export class AppModule implements OnModuleInit {
+  constructor(
+    @Inject(REDIS_CLIENT) private readonly redis: RedisClientType,
+  ) {
+  }
+
+  onModuleInit() {
+    RedisAccessor.setRedis(this.redis);
+  }
 }
