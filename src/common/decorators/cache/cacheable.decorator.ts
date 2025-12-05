@@ -1,6 +1,6 @@
 ﻿// cacheable.decorator.ts
 
-import { RedisAccessor } from '@/common/accessors/redis.accessor';
+import { RedisAccessor } from '@/common/providers/redis.accessor';
 
 interface CacheableOptions {
   ttl: number;

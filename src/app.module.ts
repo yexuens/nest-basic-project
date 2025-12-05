@@ -10,7 +10,7 @@ import { ZodExceptionFilter } from '@/common/filters/zod-exception.filter';
 import { LoginGuard } from '@/common/guards/login.guard';
 import { RedisModule } from '@/data/redis/redis.module';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
-import { RedisAccessor } from '@/common/accessors/redis.accessor';
+import { RedisAccessor } from '@/common/providers/redis.accessor';
 import { REDIS_CLIENT } from '@/data/redis/redis.provider';
 import type { RedisClientType } from 'redis';
 
