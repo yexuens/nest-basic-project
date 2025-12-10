@@ -31,13 +31,6 @@ export class UserCreateDto extends createZodDto(insertUserSchema.omit({
 }
 
 
-export class UserLoginResponse {
-  id: number;
-  token: string;
-  name: string;
-  email: string;
-}
-
 export class UserLoginRequest {
   @ApiProperty()
   email: string;

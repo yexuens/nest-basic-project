@@ -16,5 +16,16 @@
   },
   "generateOptions": {
     "spec": false
+  },
+  "schematics": {
+    "@nestjs/schematics:controller": {
+      "spec": false
+    },
+    "@nestjs/schematics:service": {
+      "spec": false
+    },
+    "@nestjs/schematics:resource": {
+      "spec": false
+    }
   }
 }

@@ -13,34 +13,43 @@ import { TransformInterceptor } from '@/common/interceptors/transform.intercepto
 import { RedisAccessor } from '@/common/providers/redis.accessor';
 import { REDIS_CLIENT } from '@/data/redis/redis.provider';
 import type { RedisClientType } from 'redis';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), UserModule, DrizzleModule, RedisModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UserModule,
+    DrizzleModule,
+    RedisModule,
+    AuthModule,
+  ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
     {
-      provide: APP_PIPE, useClass: ZodValidationPipe,
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
     },
     {
-      provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor,
+      provide: APP_INTERCEPTOR,
+      useClass: ZodSerializerInterceptor,
     },
     {
-      provide: APP_INTERCEPTOR, useClass: TransformInterceptor,
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
     {
-      provide: APP_FILTER, useClass: ZodExceptionFilter,
+      provide: APP_FILTER,
+      useClass: ZodExceptionFilter,
     },
     {
-      provide: APP_GUARD, useClass: LoginGuard,
+      provide: APP_GUARD,
+      useClass: LoginGuard,
     },
   ],
 })
-
 export class AppModule implements OnModuleInit {
-  constructor(
-    @Inject(REDIS_CLIENT) private readonly redis: RedisClientType,
-  ) {
-  }
+  constructor(@Inject(REDIS_CLIENT) private readonly redis: RedisClientType) {}
 
   onModuleInit() {
     RedisAccessor.setRedis(this.redis);
