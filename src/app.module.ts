@@ -27,9 +27,6 @@ import type { RedisClientType } from 'redis';
     {
       provide: APP_INTERCEPTOR, useClass: TransformInterceptor,
     },
-    // {
-    //   provide: APP_INTERCEPTOR, useClass: CacheableInterceptor,
-    // },
     {
       provide: APP_FILTER, useClass: ZodExceptionFilter,
     },

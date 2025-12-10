@@ -9,10 +9,19 @@ import { ZodExceptionFilter } from '@/common/filters/zod-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addBearerAuth(
+      {
+        type: 'apiKey',
+        scheme: 'Bearer',
+        bearerFormat: 'authorization',
+        name: 'authorization',
+        description: 'Enter authorization token',
+        in: 'header',
+      },
+      'access-token', // 这里给它起个名字，后面要用到
+    )
+    .addSecurityRequirements('access-token')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, cleanupOpenApiDoc(documentFactory()));

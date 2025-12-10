@@ -6,7 +6,8 @@ import { RedisConfig } from '@/common/configs/redis.config';
 import { CacheOptions } from '@/common/decorators/cache/types';
 
 
-export function Cacheable(options: CacheOptions) {
+
+export function CachePut(options: CacheOptions) {
   return function(
     target: any,
     propertyKey: string,
@@ -15,17 +16,15 @@ export function Cacheable(options: CacheOptions) {
     const originalMethod = descriptor.value;
     descriptor.value = async function(...args: any[]) {
       const redisClient = RedisAccessor.getRedis();
-      let finalKey = generateKey(options.key as string, args);
+      const finalKey = generateKey(options.key as string, args);
       const cachedValue = await redisClient.get(finalKey);
       if (cachedValue) {
         return JSON.parse(cachedValue);
       }
       const result = await originalMethod.apply(this, args);
-      if (result !== undefined && result !== null) {
-        await redisClient.set(finalKey, JSON.stringify(result), {
-          EX: options.ttl || RedisConfig.DEFAULT_TTL,
-        });
-      }
+      await redisClient.set(finalKey, JSON.stringify(result ?? ''), {
+        EX: options.ttl || RedisConfig.DEFAULT_TTL,
+      });
       return result;
     };
 

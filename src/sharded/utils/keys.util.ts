@@ -1,4 +1,4 @@
-export const CacheKeys = {
+export const RedisKeys = {
   user: {
     token: (token: string) => `user:token:${token}`,
   },

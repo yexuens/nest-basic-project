@@ -6,9 +6,10 @@ import type { RedisClientType } from 'redis';
 import { REDIS_CLIENT } from '@/data/redis/redis.provider';
 import { eq } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
-import { CacheKeys } from '@/common/utils/keys.util';
+import { RedisKeys } from '@/sharded/utils/keys.util';
 import { BizError } from '@/common/errors/biz.error';
 import { Cacheable } from '@/common/decorators/cache/cacheable.decorator';
+import { CacheEvict } from '@/common/decorators/cache/cache-evict.decorator';
 
 @Injectable()
 export class UserService {
@@ -49,7 +50,7 @@ export class UserService {
       throw new BizError('user not found');
     }
     const token = randomBytes(16).toString('hex');
-    await this.redisClient.set(CacheKeys.user.token(token), user.id, {
+    await this.redisClient.set(RedisKeys.user.token(token), user.id, {
       EX: 60 * 5,
     });
     return {
@@ -61,12 +62,19 @@ export class UserService {
   }
 
   @Cacheable({
-    key: (userId: number) => `user:${userId}`,
+    key: 'user:#0',
     ttl: 60,
   })
   async getById(userId: number) {
     return this.db.query.users.findFirst({
       where: eq(users.id, userId),
     });
+  }
+
+  @CacheEvict({
+    key: RedisKeys.user.token('#0'),
+  })
+  async logout(token: string) {
+    return token;
   }
 }

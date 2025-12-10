@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 import { NEED_LOGIN_METADATA } from '@/common/decorators/base/need-login.decorator';
 import { REDIS_CLIENT } from '@/data/redis/redis.provider';
 import type { RedisClientType } from 'redis';
-import { CacheKeys } from '@/common/utils/keys.util';
+import { RedisKeys } from '@/sharded/utils/keys.util';
 
 @Injectable()
 export class LoginGuard implements CanActivate {
@@ -25,12 +25,14 @@ export class LoginGuard implements CanActivate {
       return true;
     const req = context.switchToHttp().getRequest<FastifyRequest>();
     const token = req.headers['authorization']?.split(' ')[1];
+    console.log(token);
     if (!token)
       return false;
-    const userId = await this.redis.get(CacheKeys.user.token(token));
+    const userId = await this.redis.get(RedisKeys.user.token(token));
     if (!userId)
       return false;
     req['userId'] = Number(userId);
+    req['token'] = token;
     return true;
   }
 }
