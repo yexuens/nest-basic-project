@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { DbType } from '@/data/database/drizzle.provider';
-import { DATABASE_CONNECTION } from '@/data/database/drizzle.provider';
+import { DATABASE_CONNECTION, DbType } from '@/data/database/drizzle.provider';
 import { REDIS_CLIENT } from '@/data/redis/redis.provider';
-import type { RedisClientType } from 'redis';
+import { RedisClientType } from 'redis';
 import { CacheEvict } from '@/common/decorators/cache/cache-evict.decorator';
 import { RedisKeys } from '@/sharded/utils/keys.util';
 import { eq } from 'drizzle-orm';
@@ -23,7 +22,7 @@ export class AuthService {
       where: eq(users.email, signDto.email),
     });
     if (!user) {
-      throw new BizError("user not found");
+      throw new BizError("user not found"); 
     }
     const token = randomBytes(16).toString("hex");
     await this.redisClient.set(RedisKeys.user.token(token), user.id, {

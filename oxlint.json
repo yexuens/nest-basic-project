@@ -3,6 +3,6 @@
     "eqeqeq": "warn",
     "no-console": "off",
     "no-debugger": "error",
-
+    "semi": ["error", "never"]
   }
 }
